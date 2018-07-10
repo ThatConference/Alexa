@@ -1,0 +1,37 @@
+{
+  "name": "that-conference-assistants",
+  "version": "1.0.0",
+  "description": "Voice assistant API for That Conference",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThatConference/Alexa.git"
+  },
+  "keywords": [
+    "that",
+    "conference",
+    "alexa",
+    "google",
+    "google",
+    "assistant",
+    "google",
+    "home",
+    "amazon"
+  ],
+  "author": "Michael Fazio <mfazio23@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ThatConference/Alexa/issues"
+  },
+  "homepage": "https://github.com/ThatConference/Alexa#readme",
+  "dependencies": {
+    "actions-on-google": "^2.2.0",
+    "alexa-sdk": "^1.0.25",
+    "alexa-verifier-middleware": "^1.0.1",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3"
+  }
+}
