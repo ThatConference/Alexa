@@ -1,6 +1,8 @@
 const
     responseUtils = require('../utils/response-utils'),
-    staticResponse = require('../services/static-response-service'),
+    linkedResponses = require('../services/linked-response-service'),
+    staticResponses = require('../services/static-response-service'),
+    gettingInvolvedService = require('../services/getting-involved-service'),
     sponsorService = require('../services/sponsor-service');
 
 const {
@@ -16,22 +18,41 @@ const respond = (app, response, end, noQuestion) => {
     if (end) {
         app.close(response);
     } else {
-        app.ask(`${response}${noQuestion ? '' : `  ${responseUtils.getEndingQuestion()}`}`);
+        if(response instanceof String) {
+            app.ask(`${response}${noQuestion ? '' : `  ${responseUtils.getEndingQuestion()}`}`);
+        } else {
+            app.ask(`${response.text}${noQuestion ? '' : `  ${responseUtils.getEndingQuestion()}`}`);
+            app.ask(response.gaResponse);
+        }
     }
 };
 
 const
     defaultExitIntent = conv => {
-        conv.close(staticResponse.getGoodbyeResponse());
+        conv.close(staticResponses.getGoodbyeResponse());
     },
     about = conv => {
-        respond(conv, staticResponse.getAboutResponse(), false, true);
+        respond(conv, staticResponses.getAboutResponse(), false, true);
+    },
+    codeOfConduct = conv => {
+        const response = linkedResponses.getCodeOfConductResponse();
+
+        respond(conv, {text: response.text, gaResponse: response.link});
+    },
+    gettingInvolved = conv => {
+        const response = gettingInvolvedService.getBasicGettingInvolvedResponse();
+
+        respond(conv, {text: response.text, gaResponse: response.card})
+    },
+    gettingInvolvedNextSteps = conv => {
+        const response = gettingInvolvedService.findGettingInvolvedResponse(conv.query);
+
+        respond(conv, {text: response.text, gaResponse: response.card})
     },
     sponsors = conv => {
         const response = sponsorService.getDialogflowSponsorCardResponse();
 
-        conv.ask(response.text);
-        conv.ask(response.card);
+        respond(conv, {text: response.text, gaResponse: response.card});
     };
 
 module.exports = () => {
@@ -39,6 +60,9 @@ module.exports = () => {
 
     dfApp.intent("Default Exit Intent", defaultExitIntent);
     dfApp.intent("About", about);
+    dfApp.intent("Code of Conduct", codeOfConduct);
+    dfApp.intent("Getting Involved", gettingInvolved);
+    dfApp.intent("Getting Involved - Next Steps", gettingInvolvedNextSteps);
     dfApp.intent("Sponsors", sponsors);
 
     return dfApp;

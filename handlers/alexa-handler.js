@@ -1,8 +1,9 @@
 const
     Alexa = require('alexa-sdk'),
-    staticResponse = require('../services/static-response-service'),
-    generalUtils = require('../utils/general-utils'),
+    linkedResponses = require('../services/linked-response-service'),
+    staticResponses = require('../services/static-response-service'),
     responseUtils = require('../utils/response-utils'),
+    gettingInvolvedService = require('../services/getting-involved-service'),
     sponsorService = require('../services/sponsor-service');
 
 const respond = function (emit, response, end, noQuestion) {
@@ -20,19 +21,28 @@ const respond = function (emit, response, end, noQuestion) {
 
 const handlers = {
     'LaunchRequest': function () {
-        this.emit(':ask', staticResponse.getWelcomeResponse());
+        respond(this.emit, staticResponses.getWelcomeResponse(), false, true);
     },
     'About': function() {
-        respond(this.emit, staticResponse.getAboutResponse(), false, true);
+        respond(this.emit, staticResponses.getAboutResponse(), false, true);
+    },
+    'CodeOfConduct': function() {
+        respond(this.emit, linkedResponses.getCodeOfConductResponse().text);
+    },
+    'GettingInvolved': function() {
+        respond(this.emit, gettingInvolvedService.getBasicGettingInvolvedResponse().text);
     },
     'Sponsors': function() {
         respond(this.emit, sponsorService.getBasicSponsorsResponse());
     },
     'AMAZON.CancelIntent': function() {
-        this.emit(':tell', staticResponse.getGoodbyeResponse());
+        respond(this.emit, staticResponses.getGoodbyeResponse(), true);
+    },
+    'AMAZON.FallbackIntent': function() {
+        respond(this.emit, staticResponses.getUnknownResponse());
     },
     'AMAZON.StopIntent': function() {
-        this.emit(':tell', staticResponse.getGoodbyeResponse());
+        respond(this.emit, staticResponses.getGoodbyeResponse(), true);
     }
 };
 
