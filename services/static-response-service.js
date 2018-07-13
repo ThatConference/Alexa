@@ -1,4 +1,8 @@
 const generalUtils = require('../utils/general-utils');
+const {
+    BasicCard,
+    Button
+} = require('actions-on-google');
 
 module.exports = {
     getWelcomeResponse: () => {
@@ -44,6 +48,21 @@ module.exports = {
     getCodeOfConductResponse: () => {
         return generalUtils.getRandomItemFromArray([
             "THAT Conference is dedicated to providing a harassment-free conference experience for everyone, regardless of gender, sexual orientation, disability, physical appearance, body size, race, or religion. We do not tolerate harassment of conference participants in any form. Sexual language and imagery is not appropriate for any conference venue, including talks. Conference participants violating these rules may be sanctioned or expelled from the conference without a refund at the discretion of the conference organizers."
+        ]);
+    },
+    getCommitmentToDiversityResponse: () => {
+        return generalUtils.getRandomItemFromArray([
+            {
+                text: `THAT Conference believes in spreading the knowledge of innovators, tech enthusiasts, hobbyists and anyone else passionate about technology for that matter. We believe that this passion is enhanced by a variety of perspectives, and our goal is to create an inclusive, respectful conference environment that invites participation from people of all races, ethnicities, genders, ages, abilities, religions, sexual orientation, and educational and socioeconomic backgrounds.`,
+                card: new BasicCard({
+                    title: "Commitment to Diversity",
+                    text: `We're actively seeking to increase the diversity of our attendees, speakers, and sponsors through our calls for proposals, other open submission processes, and through dialogue with the larger communities we serve.\n  This is an ongoing process. We are talking to our program chairs, program committees, and various innovators, experts, and organizations about this goal and about ways they can help us achieve it.`,
+                    buttons: new Button({
+                        title: "Our Commitment to Diversity",
+                        url: "https://www.thatconference.com/Home/CommitmentToDiversity"
+                    })
+                })
+            }
         ]);
     }
 };

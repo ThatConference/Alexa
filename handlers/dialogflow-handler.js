@@ -39,6 +39,11 @@ const
 
         respond(conv, {text: response.text, gaResponse: response.link});
     },
+    commitmentToDiversity = conv => {
+        const response = staticResponses.getCommitmentToDiversityResponse();
+
+        respond(conv, {text: response.text, gaResponse: response.card});
+    },
     gettingInvolved = conv => {
         const response = gettingInvolvedService.getBasicGettingInvolvedResponse();
 
@@ -61,6 +66,7 @@ module.exports = () => {
     dfApp.intent("Default Exit Intent", defaultExitIntent);
     dfApp.intent("About", about);
     dfApp.intent("Code of Conduct", codeOfConduct);
+    dfApp.intent("Commitment to Diversity", commitmentToDiversity);
     dfApp.intent("Getting Involved", gettingInvolved);
     dfApp.intent("Getting Involved - Next Steps", gettingInvolvedNextSteps);
     dfApp.intent("Sponsors", sponsors);

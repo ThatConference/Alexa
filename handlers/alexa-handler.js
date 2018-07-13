@@ -29,6 +29,9 @@ const handlers = {
     'CodeOfConduct': function() {
         respond(this.emit, linkedResponses.getCodeOfConductResponse().text);
     },
+    'CommitmentToDiversity': function() {
+        respond(this.emit, staticResponses.getCommitmentToDiversityResponse().text);
+    },
     'GettingInvolved': function() {
         respond(this.emit, gettingInvolvedService.getBasicGettingInvolvedResponse().text);
     },

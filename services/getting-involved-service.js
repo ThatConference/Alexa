@@ -12,6 +12,7 @@ module.exports = {
                 text: `We need you to make this a great event.  How do you get involved?  Email us, join the crew on Slack, follow us on Twitter and Facebook, and find out more about sponsorships.`,
                 card: new BasicCard({
                     title: "Getting Involved",
+                    text: `We need you to make this a great event.  How do you get involved?  Email us, join the crew on Slack, follow us on Twitter and Facebook, and find out more about sponsorships.`,
                     buttons: new Button({
                         title: "Getting Involved",
                         url: "https://www.thatconference.com/Resources/GettingInvolved"
