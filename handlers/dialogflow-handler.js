@@ -34,6 +34,11 @@ const
     about = conv => {
         respond(conv, staticResponses.getAboutResponse(), false, true);
     },
+    callForSpeakers = conv => {
+        const response = staticResponses.getCallForSpeakersResponse();
+
+        respond(conv, {text: response.text, gaResponse: response.card});
+    },
     codeOfConduct = conv => {
         const response = linkedResponses.getCodeOfConductResponse();
 
@@ -58,6 +63,11 @@ const
         const response = sponsorService.getDialogflowSponsorCardResponse();
 
         respond(conv, {text: response.text, gaResponse: response.card});
+    },
+    travel = conv => {
+        const response = staticResponses.getTravelInformation();
+
+        respond(conv, {text: response.text, gaResponse: response.card});
     };
 
 module.exports = () => {
@@ -65,11 +75,13 @@ module.exports = () => {
 
     dfApp.intent("Default Exit Intent", defaultExitIntent);
     dfApp.intent("About", about);
+    dfApp.intent("Call for Speakers Policy", callForSpeakers);
     dfApp.intent("Code of Conduct", codeOfConduct);
     dfApp.intent("Commitment to Diversity", commitmentToDiversity);
     dfApp.intent("Getting Involved", gettingInvolved);
     dfApp.intent("Getting Involved - Next Steps", gettingInvolvedNextSteps);
     dfApp.intent("Sponsors", sponsors);
+    dfApp.intent("Travel", travel);
 
     return dfApp;
 };

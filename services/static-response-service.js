@@ -64,5 +64,35 @@ module.exports = {
                 })
             }
         ]);
+    },
+    getCallForSpeakersResponse: () => {
+        return generalUtils.getRandomItemFromArray([
+            {
+                text: `Between February 1st and March 16th we were accepting presentation proposals for THAT Conference 2018.  For more information on this process, please go to https://www.thatconference.com/Sessions/CallForSpeakers.`,
+                card: new BasicCard({
+                    title: "Call for Speakers Policy",
+                    text: `THAT Conference is not like most other conferences. We welcome people from all disciplines and backgrounds to talk about a wide variety of platforms and technologies. We want our presentations to engage the audience, spark discussion and inspire new ideas. The following is a list of a number of “Dos and Don’ts” which you can consider when writing your proposal and your presentation. Please don’t feel constrained to fulfilling all of these, they serve as guidelines, not rules, and there may be many valid reasons to break them.`,
+                    buttons: new Button({
+                        title: "Call for Speakers Policy",
+                        url: "https://www.thatconference.com/Sessions/CallForSpeakers"
+                    })
+                })
+            }
+        ]);
+    },
+    getTravelInformation: () => {
+        return generalUtils.getRandomItemFromArray([
+            {
+                text: `Due to awesome demand, both the Kalahari and Great Wolf room blocks have filled.  Rooms may still be available at the Kalahari and Great Wolf but will not be at the discounted rate.`,
+                card: new BasicCard({
+                    title: "Travel Information",
+                    text: `Nearby hotels can be found on the linked page shown below.`,
+                    buttons: new Button({
+                        title: "The Campsite",
+                        url: "https://www.thatconference.com/Resources/Travel"
+                    })
+                })
+            }
+        ]);
     }
 };

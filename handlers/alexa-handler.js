@@ -23,8 +23,14 @@ const handlers = {
     'LaunchRequest': function () {
         respond(this.emit, staticResponses.getWelcomeResponse(), false, true);
     },
+    'Unhandled': function () {
+        respond(this.emit, staticResponses.getHelpResponse(), false, true);
+    },
     'About': function() {
         respond(this.emit, staticResponses.getAboutResponse(), false, true);
+    },
+    'CallForSpeakers': function() {
+        respond(this.emit, staticResponses.getCallForSpeakersResponse().text);
     },
     'CodeOfConduct': function() {
         respond(this.emit, linkedResponses.getCodeOfConductResponse().text);
@@ -37,6 +43,9 @@ const handlers = {
     },
     'Sponsors': function() {
         respond(this.emit, sponsorService.getBasicSponsorsResponse());
+    },
+    'Travel': function() {
+        respond(this.emit, staticResponses.getTravelInformation().text);
     },
     'AMAZON.CancelIntent': function() {
         respond(this.emit, staticResponses.getGoodbyeResponse(), true);
