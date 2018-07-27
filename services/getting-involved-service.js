@@ -1,9 +1,6 @@
-const generalUtils = require('../utils/general-utils');
-
-const {
-    BasicCard,
-    Button
-} = require('actions-on-google');
+const
+    generalUtils = require('../utils/general-utils'),
+    {BasicCard, Button} = require('actions-on-google');
 
 module.exports = {
     getBasicGettingInvolvedResponse: () => {

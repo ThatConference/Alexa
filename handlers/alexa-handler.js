@@ -41,6 +41,10 @@ const handlers = {
     'GettingInvolved': function() {
         respond(this.emit, gettingInvolvedService.getBasicGettingInvolvedResponse().text);
     },
+    'Sessions': function() {
+        //TODO: This is going to be a biggie...
+        //respond(this.emit, sponsorService.getBasicSponsorsResponse());
+    },
     'Sponsors': function() {
         respond(this.emit, sponsorService.getBasicSponsorsResponse());
     },

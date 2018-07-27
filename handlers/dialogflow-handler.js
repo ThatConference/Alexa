@@ -3,6 +3,7 @@ const
     linkedResponses = require('../services/linked-response-service'),
     staticResponses = require('../services/static-response-service'),
     gettingInvolvedService = require('../services/getting-involved-service'),
+    sessionService = require('../services/session-service'),
     sponsorService = require('../services/sponsor-service');
 
 const {
@@ -14,15 +15,19 @@ const respond = (app, response, end, noQuestion) => {
         response = `I'm sorry, I'm having trouble processing your request.`;
         if (end) app.close(response);
         else app.ask(`${response}  Please try again.`);
-    }
-    if (end) {
-        app.close(response);
     } else {
-        if(response instanceof String) {
-            app.ask(`${response}${noQuestion ? '' : `  ${responseUtils.getEndingQuestion()}`}`);
+        if (end) {
+            app.close(response);
         } else {
-            app.ask(`${response.text}${noQuestion ? '' : `  ${responseUtils.getEndingQuestion()}`}`);
-            app.ask(response.gaResponse);
+            if (response instanceof String) {
+                app.ask(`${response}${noQuestion ? '' : `  ${responseUtils.getEndingQuestion()}`}`);
+            } else {
+                if(response.context) {
+                    app.contexts.set(response.context.name, 1, {value: response.context.value});
+                }
+                app.ask(`${response.text}${noQuestion ? '' : `  ${responseUtils.getEndingQuestion()}`}`);
+                app.ask(response.gaResponse);
+            }
         }
     }
 };
@@ -64,6 +69,29 @@ const
 
         respond(conv, {text: response.text, gaResponse: response.card});
     },
+    sessions = conv => {
+        const params = conv.parameters || {};
+        const response = sessionService.getRandomSession(params.category, params.level, params.room, params.sessionTime);
+
+        respond(conv, {text: response.text, gaResponse: response.card, context: response.context});
+    },
+    sessionSpeaker = conv => {
+        const params = conv.parameters || {};
+        const sessionIdContext = conv.contexts.get('sessionid');
+        const response = sessionService.getSessionSpeakerById(
+            sessionIdContext.parameters.value,
+            params.firstName || params.lastName
+        );
+
+        respond(conv, {text: response.text, gaResponse: response.card, context: response.context});
+    },
+    sessionDescription = conv => {
+        const params = conv.parameters || {};
+        const sessionIdContext = conv.contexts.get('sessionid');
+        const response = sessionService.getSessionDescriptionById(sessionIdContext.parameters.value);
+
+        respond(conv, {text: response.text, gaResponse: response.card, context: response.context});
+    },
     travel = conv => {
         const response = staticResponses.getTravelInformation();
 
@@ -80,6 +108,9 @@ module.exports = () => {
     dfApp.intent("Commitment to Diversity", commitmentToDiversity);
     dfApp.intent("Getting Involved", gettingInvolved);
     dfApp.intent("Getting Involved - Next Steps", gettingInvolvedNextSteps);
+    dfApp.intent("Sessions", sessions);
+    dfApp.intent("Sessions - Speaker", sessionSpeaker);
+    dfApp.intent("Sessions - Description", sessionDescription);
     dfApp.intent("Sponsors", sponsors);
     dfApp.intent("Travel", travel);
 
