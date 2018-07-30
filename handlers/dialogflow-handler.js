@@ -19,7 +19,7 @@ const respond = (app, response, end, noQuestion) => {
         if (end) {
             app.close(response);
         } else {
-            if (response instanceof String) {
+            if (typeof(response) === 'string') {
                 app.ask(`${response}${noQuestion ? '' : `  ${responseUtils.getEndingQuestion()}`}`);
             } else {
                 if(response.context) {
@@ -38,6 +38,9 @@ const
     },
     about = conv => {
         respond(conv, staticResponses.getAboutResponse(), false, true);
+    },
+    bacon = conv => {
+        respond(conv, staticResponses.getBaconResponse());
     },
     callForSpeakers = conv => {
         const response = staticResponses.getCallForSpeakersResponse();
@@ -71,7 +74,14 @@ const
     },
     sessions = conv => {
         const params = conv.parameters || {};
-        const response = sessionService.getRandomSession(params.category, params.level, params.room, params.sessionTime);
+        const response = sessionService.getRandomSession(
+            params.category,
+            params.level,
+            params.room,
+            {
+                sessionTime: params.sessionTime,
+                date: params.date
+            });
 
         respond(conv, {text: response.text, gaResponse: response.card, context: response.context});
     },
@@ -103,6 +113,7 @@ module.exports = () => {
 
     dfApp.intent("Default Exit Intent", defaultExitIntent);
     dfApp.intent("About", about);
+    dfApp.intent("Bacon", bacon);
     dfApp.intent("Call for Speakers Policy", callForSpeakers);
     dfApp.intent("Code of Conduct", codeOfConduct);
     dfApp.intent("Commitment to Diversity", commitmentToDiversity);

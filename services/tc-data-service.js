@@ -1,14 +1,16 @@
 const
     request = require('request'),
-    sessionUrl = "http://fazbook:2323/getallacceptedsessions.json",
-    speakersUrl = "http://fazbook:2323/getspeakers-2018.json";
+    sessionUrl = "https://www.thatconference.com/api3/session/getallacceptedsessions",
+    //sessionUrl = "http://fazbook:2323/getallacceptedsessions.json",
+    speakersUrl = "https://www.thatconference.com/api3/speakers/getspeakers?year=2018";
+    //speakersUrl = "http://fazbook:2323/getspeakers-2018.json";
 
 let sessions = [],
     speakers = [];
 
 const loadTCData = () => {
     loadSessions();
-    loadSpeakers();
+    //loadSpeakers();
 };
 
 const loadSessions = () => {

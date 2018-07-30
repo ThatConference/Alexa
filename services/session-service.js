@@ -1,6 +1,7 @@
 const
     generalUtils = require('../utils/general-utils'),
     dataService = require('./tc-data-service'),
+    sessionBlockService = require('./session-block-service'),
     {BasicCard, Button} = require('actions-on-google'),
     {DateTime, Interval, Settings} = require('luxon');
 
@@ -54,9 +55,8 @@ module.exports = {
             })
         };
     },
-    getRandomSession: (category, level, room, sessionTime) => {
-        const sessions = dataService.getSessions();
-        const filteredSessions = sessions
+    getRandomSession: (category, level, room, sessionBlockInfo) => {
+        const filteredSessions = dataService.getSessions()
             .filter((s) => s.Accepted && !s.Canceled)
             .filter((s) =>
                 !category ||
@@ -64,10 +64,23 @@ module.exports = {
                 (s.SecondaryCategory && s.SecondaryCategory.toLowerCase() === category.toLowerCase()))
             .filter((s) => !level || level === s.Level )
             .filter((s) => !room || room.toLowerCase() === s.ScheduledRoom.toLowerCase())
-            //TODO: Filter on session time with blocks
-        ;
+            .filter((s) => sessionBlockService.sessionIsInSessionBlocks(s, sessionBlockInfo));
 
         const session = generalUtils.getRandomItemFromArray(filteredSessions);
+        if(!session) {
+            return {
+                text: `No sessions or events were found then.`,
+                card: new BasicCard({
+                    title: "No Sessions/Events Found.",
+                    text: "Sorry, I couldn't find any sessions or events.",
+                    buttons: new Button({
+                        title: "Schedule",
+                        url: `https://www.thatconference.com/Schedule`
+                    })
+                })
+            };
+        }
+
         const speakers = generalUtils.getProperListText(session.Speakers.map(s => `${s.FirstName} ${s.LastName}`));
         const dateTimeTextInfo = generalUtils.getDateTimeTextInfo(session.ScheduledDateTime);
         return {

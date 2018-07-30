@@ -4,6 +4,7 @@ const
     staticResponses = require('../services/static-response-service'),
     responseUtils = require('../utils/response-utils'),
     gettingInvolvedService = require('../services/getting-involved-service'),
+    sessionService = require('../services/session-service'),
     sponsorService = require('../services/sponsor-service');
 
 const respond = function (emit, response, end, noQuestion) {
@@ -19,6 +20,24 @@ const respond = function (emit, response, end, noQuestion) {
     }
 };
 
+const getSlotValue = (slots, slotName) => {
+    let value = slots[slotName] ? slots[slotName].value : '';
+
+    //This is so ugly.  Isn't there a better way to handle this?
+    if(slots[slotName] &&
+        slots[slotName].resolutions &&
+        slots[slotName].resolutions.resolutionsPerAuthority &&
+        slots[slotName].resolutions.resolutionsPerAuthority[0] &&
+        slots[slotName].resolutions.resolutionsPerAuthority[0].values &&
+        slots[slotName].resolutions.resolutionsPerAuthority[0].values[0] &&
+        slots[slotName].resolutions.resolutionsPerAuthority[0].values[0].value &&
+        slots[slotName].resolutions.resolutionsPerAuthority[0].values[0].value.id) {
+        value = slots[slotName].resolutions.resolutionsPerAuthority[0].values[0].value.id;
+    }
+
+    return value;
+};
+
 const handlers = {
     'LaunchRequest': function () {
         respond(this.emit, staticResponses.getWelcomeResponse(), false, true);
@@ -28,6 +47,9 @@ const handlers = {
     },
     'About': function() {
         respond(this.emit, staticResponses.getAboutResponse(), false, true);
+    },
+    'Bacon': function() {
+        respond(this.emit, staticResponses.getBaconResponse());
     },
     'CallForSpeakers': function() {
         respond(this.emit, staticResponses.getCallForSpeakersResponse().text);
@@ -42,8 +64,17 @@ const handlers = {
         respond(this.emit, gettingInvolvedService.getBasicGettingInvolvedResponse().text);
     },
     'Sessions': function() {
-        //TODO: This is going to be a biggie...
-        //respond(this.emit, sponsorService.getBasicSponsorsResponse());
+        const slots = this.event.request.intent.slots;
+        const response = sessionService.getRandomSession(
+            getSlotValue(slots, 'category'),
+            '', //level
+            getSlotValue(slots, 'room'),
+            {
+                sessionTime: getSlotValue(slots, 'sessionTime'),
+                date: getSlotValue(slots, 'date')
+            });
+
+        respond(this.emit, response.text);
     },
     'Sponsors': function() {
         respond(this.emit, sponsorService.getBasicSponsorsResponse());
@@ -55,7 +86,7 @@ const handlers = {
         respond(this.emit, staticResponses.getGoodbyeResponse(), true);
     },
     'AMAZON.FallbackIntent': function() {
-        respond(this.emit, staticResponses.getUnknownResponse());
+        respond(this.emit, staticResponses.getUnknownResponse(), false, true);
     },
     'AMAZON.StopIntent': function() {
         respond(this.emit, staticResponses.getGoodbyeResponse(), true);
