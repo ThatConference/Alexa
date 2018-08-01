@@ -26,7 +26,7 @@ const respond = (app, response, end, noQuestion) => {
                     app.contexts.set(response.context.name, 1, {value: response.context.value});
                 }
                 app.ask(`${response.text}${noQuestion ? '' : `  ${responseUtils.getEndingQuestion()}`}`);
-                app.ask(response.gaResponse);
+                if(response.gaResponse) app.ask(response.gaResponse);
             }
         }
     }
